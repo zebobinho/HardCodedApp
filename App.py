@@ -9,14 +9,16 @@ class StressManagementApp(tk.Tk):
         # Set fixed window size and center the window on the screen
         self.title("Stress Management App")
         self.geometry("525x900+300+100")  # Fixed window size, centered on screen (adjust +300+100 if needed)
-        
+
+        # Make the window topmost
+        self.call('wm', 'attributes', '.', '-topmost', '1')
 
         # Create frames for Mood Tracker and Task List
         self.mood_tracker_frame = MoodTracker(self)
         self.task_list_frame = TaskList(self)
 
         # Show the mood tracker by default
-        self.mood_tracker_frame.pack(fill="both", expand=True)
+        self.mood_tracker_frame.pack()
 
         # Create a menu bar at the bottom
         self.create_menu_bar()
