@@ -4,8 +4,6 @@ This application is designed to help users track their moods and manage tasks ef
 Project Structure
 The project directory is structured as follows:
 
-bash
-Copy code
 /stress_management_app
 │
 ├── app.py                 # Main file that runs the application
@@ -16,6 +14,7 @@ Copy code
 │   ├── mood_log.txt        # Text file to store mood entries
 │   └── task_log.txt        # Text file to store tasks and deadlines
 └── assets                  # Any images, icons, or other assets if needed
+
 Key Components
 app.py: This is the main entry point for the application. It coordinates the mood tracker and task list functionalities, allowing users to interact with both features seamlessly.
 
