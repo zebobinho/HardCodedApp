@@ -3,8 +3,9 @@ from tkcalendar import Calendar
 from datetime import datetime
 
 class TaskList(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master, app):
         super().__init__(master)
+        self.app = app  # Store the reference to the main app
 
         self.tasks = []  # List to store tasks
 
@@ -22,7 +23,7 @@ class TaskList(tk.Frame):
         self.calendar = Calendar(self, selectmode="day")
         self.calendar.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
-        # Add priority dropdown for tasks
+        # Priority dropdown
         priority_label = tk.Label(self, text="Priority:", font=("Helvetica", 12))
         priority_label.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
 
@@ -40,7 +41,11 @@ class TaskList(tk.Frame):
         self.task_listbox = tk.Listbox(self, height=10, width=50)
         self.task_listbox.grid(row=7, column=0, padx=10, pady=10, sticky="ew")
 
-        # Load existing tasks from file
+        # Back button
+        back_button = tk.Button(self, text="Back to Main Menu", command=self.app.show_initial_screen, font=("Helvetica", 12))
+        back_button.grid(row=8, column=0, padx=10, pady=10, sticky="ew")
+
+        # Load tasks
         self.load_tasks()
 
     def add_task(self):

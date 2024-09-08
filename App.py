@@ -1,50 +1,71 @@
+import os
 import tkinter as tk
-from components.mood_tracker import MoodTracker
+from tkinter import ttk
 from components.task_list import TaskList
+from components.mood_tracker import MoodTracker
+from PIL import Image, ImageTk
 
 class StressManagementApp(tk.Tk):
     def __init__(self):
         super().__init__()
-
-        # Set fixed window size and center the window on the screen
+        
         self.title("Stress Management App")
-        self.geometry("525x900+300+100")  # Fixed window size, centered on screen (adjust +300+100 if needed)
+        self.geometry("525x900+300+100")
+        
+        # Configure button styles
+        self.style = ttk.Style(self)
+        self.style.configure('TButton', font=('Helvetica', 12))
+        self.style.configure('Custom.TButton', foreground='dark gray', background='light gray')
 
-        # Make the window topmost
-        self.call('wm', 'attributes', '.', '-topmost', '1')
+        # Initial screen
+        self.container = ttk.Frame(self)
+        self.container.pack(fill='both', expand=True)
+        
+        self.show_initial_screen()
 
-        # Create frames for Mood Tracker and Task List
-        self.mood_tracker_frame = MoodTracker(self)
-        self.task_list_frame = TaskList(self)
+    def show_initial_screen(self):
+        # Clear previous content
+        for widget in self.container.winfo_children():
+            widget.destroy()
+        
+        # Dynamically build the file path to the image
+        current_dir = os.path.dirname(os.path.abspath(__file__))  # Get the current script's directory
+        image_path = os.path.join(current_dir, "assets", "StressApp.png")
 
-        # Show the mood tracker by default
-        self.mood_tracker_frame.pack()
+        # Add the image in the center
+        try:
+            img = Image.open(image_path)
+            img = img.resize((500, 500), Image.LANCZOS)
+            photo = ImageTk.PhotoImage(img)
+        
+            img_label = ttk.Label(self.container, image=photo)
+            img_label.image = photo  # Keep a reference to avoid garbage collection
+            img_label.place(relx=0.5, rely=0.4, anchor='center')
+        except Exception as e:
+            print(f"Error loading image: {e}")
+            img_label = ttk.Label(self.container, text="Image not found", font=("Arial", 20))
+            img_label.place(relx=0.5, rely=0.4, anchor='center')
 
-        # Create a menu bar at the bottom
-        self.create_menu_bar()
+        # Add buttons for navigation
+        task_button = ttk.Button(self.container, text="Task List", command=self.show_task_list, style='Custom.TButton')
+        task_button.place(relx=0, rely=0.9, relwidth=0.5, anchor='w')  # Left half
 
-    def create_menu_bar(self):
-        # Frame for the menu buttons at the bottom
-        menu_bar = tk.Frame(self, height=50, bg="gray")
-        menu_bar.pack(side="bottom", fill="x")
-
-        # Button to switch to Mood Tracker
-        mood_button = tk.Button(menu_bar, text="Mood Tracker", command=self.show_mood_tracker)
-        mood_button.pack(side="left", expand=True, fill="both")
-
-        # Button to switch to Task List
-        task_button = tk.Button(menu_bar, text="Task List", command=self.show_task_list)
-        task_button.pack(side="right", expand=True, fill="both")
-
-    def show_mood_tracker(self):
-        # Hide task list and show mood tracker
-        self.task_list_frame.pack_forget()
-        self.mood_tracker_frame.pack(fill="both", expand=True)
+        mood_button = ttk.Button(self.container, text="Mood Tracker", command=self.show_mood_tracker, style='Custom.TButton')
+        mood_button.place(relx=1, rely=0.9, relwidth=0.5, anchor='e')  # Right half
 
     def show_task_list(self):
-        # Hide mood tracker and show task list
-        self.mood_tracker_frame.pack_forget()
-        self.task_list_frame.pack(fill="both", expand=True)
+        for widget in self.container.winfo_children():
+            widget.destroy()
+        
+        task_list_frame = TaskList(self.container, self)  # Pass self (the main app)
+        task_list_frame.pack(fill='both', expand=True)
+
+    def show_mood_tracker(self):
+        for widget in self.container.winfo_children():
+            widget.destroy()
+        
+        mood_tracker_frame = MoodTracker(self.container, self)  # Pass self (the main app)
+        mood_tracker_frame.pack(fill='both', expand=True)
 
 
 if __name__ == "__main__":
