@@ -14,8 +14,8 @@ class StressManagementApp(tk.Tk):
         
         # Configure button styles
         self.style = ttk.Style(self)
-        self.style.configure('TButton', font=('Helvetica', 12))
-        self.style.configure('Custom.TButton', foreground='dark gray', background='light gray')
+        self.style.configure('TButton', font=('Helvetica', 15))
+        self.style.configure('Custom.TButton', foreground='black', background='light gray')
 
         # Initial screen
         self.container = ttk.Frame(self)
@@ -48,10 +48,13 @@ class StressManagementApp(tk.Tk):
 
         # Add buttons for navigation
         task_button = ttk.Button(self.container, text="Task List", command=self.show_task_list, style='Custom.TButton')
-        task_button.place(relx=0, rely=0.9, relwidth=0.5, anchor='w')  # Left half
+        # Increase the height and adjust the vertical position slightly
+        task_button.place(relx=0, rely=0.85, relwidth=0.5, relheight=0.1, anchor='w')  # Left half, increased size
 
         mood_button = ttk.Button(self.container, text="Mood Tracker", command=self.show_mood_tracker, style='Custom.TButton')
-        mood_button.place(relx=1, rely=0.9, relwidth=0.5, anchor='e')  # Right half
+        # Increase the height and adjust the vertical position slightly
+        mood_button.place(relx=1, rely=0.85, relwidth=0.5, relheight=0.1, anchor='e')  # Right half, increased size
+
 
     def show_task_list(self):
         for widget in self.container.winfo_children():
