@@ -15,6 +15,10 @@ class TaskList(tk.Frame):
         self.bg_color = "light gray"
         self.text_color = "black"
 
+        # Configure the grid layout
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(7, weight=1)
+
         # Task Input
         task_label = tk.Label(self, text="Task Name:", font=("Helvetica", 12), bg=self.bg_color, fg=self.text_color)
         task_label.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
@@ -26,7 +30,8 @@ class TaskList(tk.Frame):
         deadline_label = tk.Label(self, text="Select Deadline:", font=("Helvetica", 12), bg=self.bg_color, fg=self.text_color)
         deadline_label.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
 
-        self.calendar = Calendar(self, selectmode="day")
+        # Removing the week numbers in the calendar
+        self.calendar = Calendar(self, selectmode="day", showweeknumbers=False)
         self.calendar.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 
         # Priority dropdown
@@ -46,7 +51,7 @@ class TaskList(tk.Frame):
 
         # Task List Box
         self.task_listbox = tk.Listbox(self, height=10, width=50, bg=self.bg_color, fg=self.text_color)
-        self.task_listbox.grid(row=7, column=0, padx=10, pady=10, sticky="ew")
+        self.task_listbox.grid(row=7, column=0, padx=10, pady=10, sticky="nsew")
 
         # Sort by due date button
         sort_due_button = tk.Button(self, text="Sort by Due Date", command=self.sort_by_due_date, bg="#2196F3", fg="black", font=("Helvetica", 12))
@@ -62,7 +67,8 @@ class TaskList(tk.Frame):
 
         # Load tasks and refresh the task list
         self.load_tasks()
-        self.update_task_listbox()
+        self.update_idletasks()  # Force an immediate update
+        self.task_entry.focus()  # Set focus on the task entry field
 
     def add_task(self):
         task_name = self.task_entry.get()
@@ -91,16 +97,11 @@ class TaskList(tk.Frame):
         # Clear the task entry field
         self.task_entry.delete(0, tk.END)
 
-        # Sort the tasks based on the current filter and refresh the listbox
-        if self.current_filter == 0:
-            self.sort_by_due_date()
-        else:
-            self.sort_by_importance()
+        # Refresh the task listbox and save tasks
+        self.update_task_listbox()
+        self.save_tasks()
 
     def save_tasks(self):
-        # Sort tasks by deadline before saving
-        self.tasks.sort(key=lambda task: task[1])
-
         # Write sorted tasks to a text file
         with open("logs/task_log.txt", "w") as file:
             for task in self.tasks:
@@ -126,6 +127,9 @@ class TaskList(tk.Frame):
 
                     # Append the task as a tuple (task_name, deadline_date, priority)
                     self.tasks.append((task_name, deadline_date, priority.strip()))
+                
+                # Update the task listbox after loading tasks
+                self.update_task_listbox()
         except FileNotFoundError:
             pass
 
@@ -137,9 +141,6 @@ class TaskList(tk.Frame):
         for task in self.tasks:
             task_string = f"{task[0]} - Deadline: {task[1].strftime('%m/%d/%y')}, Priority: {task[2]}"
             self.task_listbox.insert(tk.END, task_string)
-
-        # Save the sorted tasks to the file
-        self.save_tasks()
 
     def sort_by_due_date(self):
         # Sort tasks by deadline

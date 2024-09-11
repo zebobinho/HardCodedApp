@@ -1,11 +1,3 @@
-Fortnite Travis Scott Concert - Deadline: 09/11/24, Priority: High
-Prostate Exam - Deadline: 09/12/24, Priority: High
-test - Deadline: 09/12/24, Priority: High
-Study - Deadline: 09/13/24, Priority: Low
-PeepeePoopoo - Deadline: 09/13/24, Priority: Low
-Grind Brawl Stars - Deadline: 09/19/24, Priority: High
-Dream Concert - Deadline: 09/27/24, Priority: High
-Gyatt - Deadline: 09/27/24, Priority: Medium
-Sniff Bath Salts - Deadline: 10/04/24, Priority: Medium
-Bomboclat - Deadline: 09/01/26, Priority: Low
-Fist Fight N3on - Deadline: 10/01/26, Priority: Low
+test - Deadline: 09/20/24, Priority: Medium
+rizz - Deadline: 09/25/24, Priority: High
+skibidi - Deadline: 09/27/24, Priority: Low
