@@ -9,6 +9,7 @@ class TaskList(tk.Frame):
         self.app = app  # Store the reference to the main app
 
         self.tasks = []  # List to store tasks
+        self.current_filter = 0  # 0 = Sort by due date, 1 = Sort by importance (priority)
 
         # Define colors
         self.bg_color = "light gray"
@@ -40,53 +41,115 @@ class TaskList(tk.Frame):
         self.priority_dropdown.grid(row=5, column=0, padx=10, pady=5, sticky="ew")
 
         # Add Task Button
-        add_button = tk.Button(self, text="Add Task", command=self.add_task, bg="#4CAF50", fg="white", font=("Helvetica", 12))
+        add_button = tk.Button(self, text="Add Task", command=self.add_task, bg="#4CAF50", fg="black", font=("Helvetica", 12))
         add_button.grid(row=6, column=0, padx=10, pady=10, sticky="ew")
 
         # Task List Box
         self.task_listbox = tk.Listbox(self, height=10, width=50, bg=self.bg_color, fg=self.text_color)
         self.task_listbox.grid(row=7, column=0, padx=10, pady=10, sticky="ew")
 
+        # Sort by due date button
+        sort_due_button = tk.Button(self, text="Sort by Due Date", command=self.sort_by_due_date, bg="#2196F3", fg="black", font=("Helvetica", 12))
+        sort_due_button.grid(row=8, column=0, padx=10, pady=10, sticky="ew")
+
+        # Sort by importance button
+        sort_importance_button = tk.Button(self, text="Sort by Importance", command=self.sort_by_importance, bg="#FF5722", fg="black", font=("Helvetica", 12))
+        sort_importance_button.grid(row=9, column=0, padx=10, pady=10, sticky="ew")
+
         # Back button using ttk and matching the style
         back_button = ttk.Button(self, text="Back to Main Menu", command=self.app.show_initial_screen, style='Custom.TButton')
-        back_button.grid(row=8, column=0, padx=10, pady=10, sticky="ew")
+        back_button.grid(row=10, column=0, padx=10, pady=10, sticky="ew")
 
-        # Load tasks
+        # Load tasks and refresh the task list
         self.load_tasks()
+        self.update_task_listbox()
 
     def add_task(self):
         task_name = self.task_entry.get()
-        deadline = self.calendar.get_date()
+        deadline = self.calendar.get_date()  # Get the selected date as a string (e.g., '09/10/2024')
         priority = self.priority_var.get()
 
         if task_name == "":
             tk.messagebox.showwarning("Input Error", "Task name cannot be empty")
             return
 
-        # Add task to internal list and display it
-        task_info = f"{task_name} - Deadline: {deadline}, Priority: {priority}"
-        self.tasks.append(task_info)
-        self.task_listbox.insert(tk.END, task_info)
+        # Convert the deadline string into a datetime object for validation
+        deadline_date = datetime.strptime(deadline, "%m/%d/%y")
 
-        # Save tasks to file
-        self.save_tasks()
+        # Get the current date for comparison
+        current_date = datetime.now()
+
+        # Check if the selected date is in the past
+        if deadline_date < current_date:
+            tk.messagebox.showerror("Invalid Date", "The selected deadline has already passed. Please choose a future date.")
+            return
+
+        # Add the task to the internal list as a tuple (task_name, deadline, priority)
+        task_info = (task_name, deadline_date, priority)
+        self.tasks.append(task_info)
 
         # Clear the task entry field
         self.task_entry.delete(0, tk.END)
 
+        # Sort the tasks based on the current filter and refresh the listbox
+        if self.current_filter == 0:
+            self.sort_by_due_date()
+        else:
+            self.sort_by_importance()
+
     def save_tasks(self):
-        # Write tasks to a text file
+        # Sort tasks by deadline before saving
+        self.tasks.sort(key=lambda task: task[1])
+
+        # Write sorted tasks to a text file
         with open("logs/task_log.txt", "w") as file:
             for task in self.tasks:
-                file.write(f"{task}\n")
+                # Format each task for display and saving
+                task_string = f"{task[0]} - Deadline: {task[1].strftime('%m/%d/%y')}, Priority: {task[2]}"
+                file.write(f"{task_string}\n")
 
     def load_tasks(self):
+        # Clear the current task list
+        self.tasks.clear()
+
         # Load tasks from the text file
         try:
             with open("logs/task_log.txt", "r") as file:
                 tasks = file.readlines()
                 for task in tasks:
-                    self.task_listbox.insert(tk.END, task.strip())
-                    self.tasks.append(task.strip())
+                    # Split the task string and extract the task name, deadline, and priority
+                    task_name, rest = task.split(" - Deadline: ")
+                    deadline_str, priority = rest.split(", Priority: ")
+
+                    # Convert deadline string back to a datetime object
+                    deadline_date = datetime.strptime(deadline_str.strip(), "%m/%d/%y")
+
+                    # Append the task as a tuple (task_name, deadline_date, priority)
+                    self.tasks.append((task_name, deadline_date, priority.strip()))
         except FileNotFoundError:
             pass
+
+    def update_task_listbox(self):
+        # Clear the listbox
+        self.task_listbox.delete(0, tk.END)
+
+        # Display the tasks in the listbox
+        for task in self.tasks:
+            task_string = f"{task[0]} - Deadline: {task[1].strftime('%m/%d/%y')}, Priority: {task[2]}"
+            self.task_listbox.insert(tk.END, task_string)
+
+        # Save the sorted tasks to the file
+        self.save_tasks()
+
+    def sort_by_due_date(self):
+        # Sort tasks by deadline
+        self.tasks.sort(key=lambda task: task[1])
+        self.current_filter = 0  # Set the current filter to "sort by due date"
+        self.update_task_listbox()
+
+    def sort_by_importance(self):
+        # Define a priority mapping for sorting
+        priority_map = {"High": 1, "Medium": 2, "Low": 3}
+        self.tasks.sort(key=lambda task: priority_map[task[2]])
+        self.current_filter = 1  # Set the current filter to "sort by importance"
+        self.update_task_listbox()
