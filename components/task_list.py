@@ -61,12 +61,19 @@ class TaskList(tk.Frame):
         sort_importance_button = tk.Button(self, text="Sort by Importance", command=self.sort_by_importance, bg="#FF5722", fg="black", font=("Helvetica", 12))
         sort_importance_button.grid(row=9, column=0, padx=10, pady=10, sticky="ew")
 
+        # Refresh Tasks Button
+        refresh_button = tk.Button(self, text="Refresh Tasks", command=self.refresh_tasks, bg="#FFDD57", fg="black", font=("Helvetica", 12))
+        refresh_button.grid(row=10, column=0, padx=10, pady=10, sticky="ew")
+
         # Back button using ttk and matching the style
         back_button = ttk.Button(self, text="Back to Main Menu", command=self.app.show_initial_screen, style='Custom.TButton')
-        back_button.grid(row=10, column=0, padx=10, pady=10, sticky="ew")
+        back_button.grid(row=11, column=0, padx=10, pady=10, sticky="ew")
 
         # Load tasks and refresh the task list
         self.load_tasks()
+
+        # Set default filter to sort by due date
+        self.sort_by_due_date()  # Sort tasks by due date when app opens
         self.update_idletasks()  # Force an immediate update
         self.task_entry.focus()  # Set focus on the task entry field
 
@@ -97,8 +104,13 @@ class TaskList(tk.Frame):
         # Clear the task entry field
         self.task_entry.delete(0, tk.END)
 
-        # Refresh the task listbox and save tasks
-        self.update_task_listbox()
+        # Sort the tasks based on the current filter
+        if self.current_filter == 0:
+            self.sort_by_due_date()  # Sort by due date
+        else:
+            self.sort_by_importance()  # Sort by importance
+
+        # Save tasks after sorting
         self.save_tasks()
 
     def save_tasks(self):
@@ -154,3 +166,14 @@ class TaskList(tk.Frame):
         self.tasks.sort(key=lambda task: priority_map[task[2]])
         self.current_filter = 1  # Set the current filter to "sort by importance"
         self.update_task_listbox()
+
+    def refresh_tasks(self):
+        # Get the current date
+        current_date = datetime.now()
+
+        # Remove tasks that have a deadline before the current date
+        self.tasks = [task for task in self.tasks if task[1] >= current_date]
+
+        # Refresh the task listbox and save the remaining tasks
+        self.update_task_listbox()
+        self.save_tasks()
