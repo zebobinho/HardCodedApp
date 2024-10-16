@@ -62,4 +62,25 @@ The box in the middle of the screen is where the tasks will be displayed, to enh
 - **`Sort by Due Data`** to see tasks from the closest due date to the furthest due date
 - **`Sort by Importance`** to see tasks from High importance to Low importance
 
+### Manual
+
+#### Using the Calendar
+To use the calendar:
+- Top left: Use arrows to go through the months
+- Top right: User arrows to go through the years
+- When you have found the day of your task, simply click on it on the calendar
+
+#### Adding task
+In order to add a task:
+1. Write down the name of the task under **`Task Name`**
+2. Select the due date in the **`Calendar`**
+3. Select an **`Importance`** in the dropdown menu
+4. Press **`Add Task`**
+5. The task will appear in the box below
+
+#### Modifying Filters
+The initial applied filter is the **`Due Date`** filter. If you wish to change the way the current tasks are displayed, simply click one of the filter buttons:
+- **`Sort by Due Date`**
+- **`Sort by Importance`**
+
 
