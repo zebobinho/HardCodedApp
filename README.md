@@ -34,7 +34,7 @@ The project directory is structured as follows:
 ### Logs
 
 - **mood_log.txt**: Stores all mood entries with timestamps.
-- **task_log.txt**: Stores all tasks with details such as task name, deadline and priority.
+- **task_log.txt**: Stores all tasks with details such as task name, task due date and importance.
 
 ### Assets
 
@@ -60,6 +60,6 @@ The task list is made up the **`Task Name`**, **`Calendar`**, **`Importance`** a
 #### Filters
 The box in the middle of the screen is where the tasks will be displayed, to enhance the display of tasks, there are 3 filters that can be used to see your tasks in different ways:<br>
 - **`Sort by Due Data`** to see tasks from the closest due date to the furthest due date
-- **`Sort by Importance`** to see tasks from High priority to Low priority
+- **`Sort by Importance`** to see tasks from High importance to Low importance
 
 
