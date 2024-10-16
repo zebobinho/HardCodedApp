@@ -56,7 +56,7 @@ Mood Tracker: Track how you feel throughout the day and reflect on your emotions
 Task List: Organize your tasks and stay on top of your deadlines to reduce stress and provides assistance on how to approach your tasks.<br>
 ### Components
 #### Task Creation
-The task list is made up the **`Task Name`**, **`Calendar`**, **`Priority`** and **`Add Task`** which are all used for the user to create their tasks. <br>
+The task list is made up the **`Task Name`**, **`Calendar`**, **`Importance`** and **`Add Task`** which are all used for the user to create their tasks. <br>
 #### Filters
 The box in the middle of the screen is where the tasks will be displayed, to enhance the display of tasks, there are 3 filters that can be used to see your tasks in different ways:<br>
 - **`Sort by Due Data`** to see tasks from the closest due date to the furthest due date
